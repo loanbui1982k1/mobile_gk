@@ -1,94 +1,51 @@
-import {View,  StyleSheet, Text, SectionList, RefreshControl, FlatList} from 'react-native'
-import React, {useState} from 'react'
+import { View, StyleSheet, Text, TextInput } from 'react-native'
+import React, { useState } from 'react'
 export default function Flex() {
-  const [Sections, setSections] = useState([
-    {
-      title: 'Title 1',
-      data: ['Item 1-1', 'Item 1-2'],
-    },
-  ]);
-  const onRefresh = () => {
-    setRefreshing(true);
-    const index = Sections.length + 1;
-    setSections([...Sections,
-    {
-      title: 'Title ' + index,
-      data:
-        [
-          'Item ' + index + '-1',
-          'Item ' + index + '-2'
-        ],
-    }
-    ]);
-    setRefreshing(false);
-  }
-  const [Refreshing, setRefreshing] = useState(false);
-  const [Items, setItems] = useState([
-    { name: 'Item 1' },
-    { name: 'Item 2' },
-    { name: 'Item 3' },
-    { name: 'Item 4' },
-    { name: 'Item 5' },
-    { name: 'Item 6' },
-    { name: 'Item 7' },
-    { name: 'Item 8' },
-    { name: 'Item 9' },
-    { name: 'Item 27' },
-    { name: 'Item 78' },
-  ]);
+  const [name, SetName] = useState('');
+  const [pass, SetPass] = useState('');
   return (
-    <SectionList
-      keyExtractor={(item, index) => index.toString()}
-      sections={Sections}
-      renderItem={({ item }) => (
-        <View style={styles.item}>
-          <Text style={styles.text_item}>{item}</Text>
-        </View >
-      )}
-      renderSectionHeader={({ section }) => (
-        <View style={styles.header}>
-          <Text style={styles.text_header}>{section.title}</Text>
-        </View>
-      )}
-      refreshControl={
-        < RefreshControl
-          refreshing={Refreshing}
-          onRefresh={onRefresh}
-        />
-      }
-    />
-
-    // <FlatList keyExtractor={(item, index) => index.toString()}
-    // data = {Items} renderItem = {({item}) => (
-    //   <View style = {styles.item}>
-    //     <Text style = {styles.text_item}>{item.name}</Text>
-    //   </View>
-    // )}
-    // >
-    // </FlatList> 
+    <View style={styles.body}>
+      <Text style={styles.text}>
+        Tên đăng nhập:
+      </Text>
+      <TextInput
+        style={styles.input}
+        keyboardType = 'email-address'
+        maxLength = {50}
+        placeholder='Nhập tên đăng nhập'
+        onChangeText={(value) => SetName(value)}
+      />
+      <Text style={styles.text}>
+        Mật khẩu:
+      </Text>
+      <TextInput
+        style={styles.input}
+        maxLength = {50}
+        secureTextEntry
+        placeholder='Nhập mật khẩu'
+        onChangeText={(value) => SetPass(value)}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  header: {
-    backgroundColor: '#4ae1fa',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-  },
-  item: {
-    borderBottomWidth: 1,
-    justifyContent: 'center',
+  body: {
+    flex: 1,
+    backgroundColor: '#ffffff',
     alignItems: 'center',
   },
-  text_header: {
+  text: {
     color: '#000000',
-    fontSize: 35,
+    fontSize: 20,
     margin: 10,
   },
-  text_item: {
-    color: '#000000',
-    fontSize: 25,
-    margin: 5,
+  input: {
+    width: 200,
+    borderWidth: 1,
+    borderColor: '#555',
+    borderRadius: 5,
+    textAlign: 'center',
+    fontSize: 20,
   },
 });
