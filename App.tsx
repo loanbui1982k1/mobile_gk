@@ -1,106 +1,94 @@
-import {View,  StyleSheet, Text} from 'react-native'
-import React from 'react'
+import {View,  StyleSheet, Text, SectionList, RefreshControl, FlatList} from 'react-native'
+import React, {useState} from 'react'
 export default function Flex() {
+  const [Sections, setSections] = useState([
+    {
+      title: 'Title 1',
+      data: ['Item 1-1', 'Item 1-2'],
+    },
+  ]);
+  const onRefresh = () => {
+    setRefreshing(true);
+    const index = Sections.length + 1;
+    setSections([...Sections,
+    {
+      title: 'Title ' + index,
+      data:
+        [
+          'Item ' + index + '-1',
+          'Item ' + index + '-2'
+        ],
+    }
+    ]);
+    setRefreshing(false);
+  }
+  const [Refreshing, setRefreshing] = useState(false);
+  const [Items, setItems] = useState([
+    { name: 'Item 1' },
+    { name: 'Item 2' },
+    { name: 'Item 3' },
+    { name: 'Item 4' },
+    { name: 'Item 5' },
+    { name: 'Item 6' },
+    { name: 'Item 7' },
+    { name: 'Item 8' },
+    { name: 'Item 9' },
+    { name: 'Item 27' },
+    { name: 'Item 78' },
+  ]);
   return (
-    <View style={styles.body}>
-      <View style={styles.row}>
-        <View style={styles.view1}>
-          <Text style={styles.text}>1</Text>
+    <SectionList
+      keyExtractor={(item, index) => index.toString()}
+      sections={Sections}
+      renderItem={({ item }) => (
+        <View style={styles.item}>
+          <Text style={styles.text_item}>{item}</Text>
+        </View >
+      )}
+      renderSectionHeader={({ section }) => (
+        <View style={styles.header}>
+          <Text style={styles.text_header}>{section.title}</Text>
         </View>
-        <View style={styles.view2}>
-          <Text style={styles.text}>2</Text>
-        </View>
-        <View style={styles.view3}>
-          <Text style={styles.text}>3</Text>
-        </View>
-      </View>
-      <View style={styles.row}>
-        <View style={styles.view4}>
-          <Text style={styles.text}>4</Text>
-        </View>
-      </View>
-      <View style={styles.row}>
-        <View style={styles.view5}>
-          <Text style={styles.text}>5</Text>
-        </View>
-      </View>
-      <View style={styles.big_row}>
-        <View style={styles.view6}>
-          <Text style={styles.text}>6</Text>
-        </View>
-        <View style={styles.view7}>
-          <Text style={styles.text}>7</Text>
-        </View>
-      </View>
-    </View>
+      )}
+      refreshControl={
+        < RefreshControl
+          refreshing={Refreshing}
+          onRefresh={onRefresh}
+        />
+      }
+    />
+
+    // <FlatList keyExtractor={(item, index) => index.toString()}
+    // data = {Items} renderItem = {({item}) => (
+    //   <View style = {styles.item}>
+    //     <Text style = {styles.text_item}>{item.name}</Text>
+    //   </View>
+    // )}
+    // >
+    // </FlatList> 
   );
 }
 
 const styles = StyleSheet.create({
-  body: {
-    flex: 1,
-    flexDirection: 'column',
-    backgroundColor: '#ffffff',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
-  row: {
-    flexDirection: 'row',
-    backgroundColor: '#ffffff',
-    alignItems: 'center',
+  header: {
+    backgroundColor: '#4ae1fa',
     justifyContent: 'center',
-  },
-  big_row: {
-    flex: 1,
-    flexDirection: 'row',
-    backgroundColor: '#ffffff',
-    justifyContent: 'center',
-  },
-  view1: {
-    flex: 1,
-    backgroundColor: '#00ffff',
     alignItems: 'center',
-    justifyContent: 'center',
+    borderWidth: 2,
   },
-  view2: {
-    flex: 2,
-    backgroundColor: '#ff00ff',
+  item: {
+    borderBottomWidth: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    justifyContent: 'center',
   },
-  view3: {
-    flex: 3,
-    backgroundColor: '#ffff00',
-    alignItems: 'center',
-    justifyContent: 'center',
+  text_header: {
+    color: '#000000',
+    fontSize: 35,
+    margin: 10,
   },
-  view4: {
-    flex: 1,
-    backgroundColor: '#ff0000',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  view5: {
-    flex: 1,
-    backgroundColor: '#0fff0f',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  view6: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  view7: {
-    flex: 1,
-    backgroundColor: '#0000ff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  text: {
+  text_item: {
     color: '#000000',
     fontSize: 25,
-    margin: 10,
+    margin: 5,
   },
 });
