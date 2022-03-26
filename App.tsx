@@ -1,38 +1,52 @@
-import {View, Button, Text, StyleSheet} from 'react-native'
-import React, {useState} from 'react'
-export default function App() {
-  const [name, setName] = useState('');
-  const onClickHandler = () => {
-    setName ('Loan')
-  }
-  return(
-    <View style = {body}>
-      <Text style = {styles.text}>My name is {name}</Text>
-     <Button title='Update'         
-            onPress = {onClickHandler}></Button>
-   </View>
-  )
+import {View,  StyleSheet, Text} from 'react-native'
+import React from 'react'
+export default function Flex() {
+  
+  return (
+    <View style={styles.body}>
+      <View style={styles.view1}>
+        <Text style={styles.text}>1</Text>
+      </View>
+      <View style={styles.view2}>
+        <Text style={styles.text}>2</Text>
+      </View>
+      <View style={styles.view3}>
+        <Text style={styles.text}>3</Text>
+      </View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
   body: {
     flex: 1,
+    flexDirection: 'column',
+    backgroundColor: '#0000ff',
+    alignItems: 'stretch',
+    justifyContent: 'center',
+  },
+  view1: {
+    flex: 1,
+    backgroundColor: '#00ffff',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'grey',
+  },
+  view2: {
+    flex: 1,
+    backgroundColor: '#ff00ff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  view3: {
+    flex: 1,
+    backgroundColor: '#ffff00',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   text: {
-    color: '#00e000',
-    fontSize: 25,
+    color: '#000000',
+    fontSize: 35,
+    fontStyle: 'italic',
     margin: 10,
-    textTransform: 'uppercase'
   },
-})
-
-const page = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#61dafb',
-  }
-})
-const body = StyleSheet.compose(styles.body, page.container);
+});
