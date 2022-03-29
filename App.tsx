@@ -1,30 +1,75 @@
-import { View, StyleSheet, Text, TextInput } from 'react-native'
+import { View, StyleSheet, Text, TextInput, Pressable, Button, TouchableOpacity, TouchableHighlight } from 'react-native'
 import React, { useState } from 'react'
-export default function Flex() {
+export default function App() {
   const [name, SetName] = useState('');
-  const [pass, SetPass] = useState('');
+  const [submitted, SetSubmitted] = useState(false);
+  const onPressHandler = () => {
+    SetSubmitted(!submitted);
+  }
+
   return (
     <View style={styles.body}>
       <Text style={styles.text}>
-        Tên đăng nhập:
+        Please write your name:
       </Text>
       <TextInput
         style={styles.input}
-        keyboardType = 'email-address'
-        maxLength = {50}
-        placeholder='Nhập tên đăng nhập'
+        placeholder='e.g. John'
         onChangeText={(value) => SetName(value)}
       />
-      <Text style={styles.text}>
-        Mật khẩu:
-      </Text>
-      <TextInput
-        style={styles.input}
-        maxLength = {50}
-        secureTextEntry
-        placeholder='Nhập mật khẩu'
-        onChangeText={(value) => SetPass(value)}
+      <Button
+        title={submitted ? 'Clear' : 'Submit'}
+        onPress={onPressHandler}
+        color='#00f'
       />
+      <TouchableHighlight onLongPress={onPressHandler} 
+        style={ styles.button}
+        // onPress={onPressHandler}
+        activeOpacity={0.5} 
+        underlayColor='#dddddd'
+      >
+        <Text style={styles.text}>
+          {submitted ? 'Clear' : 'Submit'}
+        </Text>
+      </TouchableHighlight>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={onPressHandler}
+        activeOpacity={0.5}
+      >
+        <Text style={styles.text}>
+          {submitted ? 'Clear' : 'Submit'}
+        </Text>
+      </TouchableOpacity>
+      {/* <TouchableWithoutFeedback
+        onPress={onPressHandler}
+      >
+        <View style={styles.button}>
+          <Text style={styles.text}>
+            {submitted ? 'Clear' : 'Submit'}
+          </Text>
+        </View>
+      </TouchableWithoutFeedback> */}
+      <Pressable 
+        onPress={onPressHandler}
+        hitSlop={{ top: 10, bottom: 10, right: 10, left: 10 }}
+        android_ripple={{ color: '#00f' }}
+        style={({ pressed }) => [
+          { backgroundColor: pressed ? '#dddddd' : '#00ff00' },
+          styles.button
+        ]}
+      >
+        <Text style={styles.text}>
+          {submitted ? 'Clear' : 'Submit'}
+        </Text>
+      </Pressable>
+      {submitted ?
+        <Text style={styles.text}>
+          You are registered as {name}
+        </Text>
+        :
+        null
+      }
     </View>
   );
 }
@@ -47,5 +92,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     textAlign: 'center',
     fontSize: 20,
+    marginBottom: 10,
+  },
+  button: {
+    width: 150,
+    height: 50,
+    alignItems: 'center',
   },
 });
