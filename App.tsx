@@ -1,56 +1,51 @@
-import { View, StyleSheet, Text, TextInput, Pressable, Button, TouchableOpacity, TouchableHighlight } from 'react-native'
+import { View, StyleSheet, Text, TextInput, Pressable, ToastAndroid, Alert } from 'react-native'
 import React, { useState } from 'react'
 export default function App() {
   const [name, SetName] = useState('');
   const [submitted, SetSubmitted] = useState(false);
   const onPressHandler = () => {
-    SetSubmitted(!submitted);
+    if (name.length > 3) {
+      SetSubmitted(!submitted);
+    } else {
+      // Alert.alert(
+      //   'Warning',
+      //   'Phải nhập tên dài hơn 3 kí tự', [
+      //   {
+      //     text: 'Do not show again',
+      //     onPress: () => console.warn('Do not show Pressed!')
+      //   },
+      //   {
+      //     text: 'Cancel',
+      //     onPress: () => console.warn('Cancel Pressed!')
+      //   },
+      //   {
+      //     text: 'OK',
+      //     onPress: () => console.warn('OK Pressed!')
+      //   },
+      // ],
+      //   {
+      //     cancelable: true,
+      //     onDismiss: () => console.warn('Alert dismissed!')
+      //   })
+      ToastAndroid.showWithGravityAndOffset(
+        'Phải nhập tên dài hơn 3 kí tự',
+        ToastAndroid.LONG,
+        ToastAndroid.CENTER,
+        10, 10
+      )
+    }
   }
 
   return (
     <View style={styles.body}>
       <Text style={styles.text}>
-        Please write your name:
+        Nhập tên của bạn:
       </Text>
       <TextInput
         style={styles.input}
-        placeholder='e.g. John'
         onChangeText={(value) => SetName(value)}
       />
-      <Button
-        title={submitted ? 'Clear' : 'Submit'}
-        onPress={onPressHandler}
-        color='#00f'
-      />
-      <TouchableHighlight onLongPress={onPressHandler} 
-        style={ styles.button}
-        // onPress={onPressHandler}
-        activeOpacity={0.5} 
-        underlayColor='#dddddd'
-      >
-        <Text style={styles.text}>
-          {submitted ? 'Clear' : 'Submit'}
-        </Text>
-      </TouchableHighlight>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={onPressHandler}
-        activeOpacity={0.5}
-      >
-        <Text style={styles.text}>
-          {submitted ? 'Clear' : 'Submit'}
-        </Text>
-      </TouchableOpacity>
-      {/* <TouchableWithoutFeedback
-        onPress={onPressHandler}
-      >
-        <View style={styles.button}>
-          <Text style={styles.text}>
-            {submitted ? 'Clear' : 'Submit'}
-          </Text>
-        </View>
-      </TouchableWithoutFeedback> */}
-      <Pressable 
+      <Pressable
         onPress={onPressHandler}
         hitSlop={{ top: 10, bottom: 10, right: 10, left: 10 }}
         android_ripple={{ color: '#00f' }}
@@ -72,7 +67,7 @@ export default function App() {
       }
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   body: {
@@ -82,7 +77,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#000000',
-    fontSize: 20,
+    fontSize: 25,
     margin: 10,
   },
   input: {
@@ -91,7 +86,7 @@ const styles = StyleSheet.create({
     borderColor: '#555',
     borderRadius: 5,
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: 25,
     marginBottom: 10,
   },
   button: {
