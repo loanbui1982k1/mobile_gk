@@ -1,4 +1,4 @@
-import { View, StyleSheet, Text, TextInput, Pressable, Modal } from 'react-native'
+import { View, StyleSheet, Text, TextInput, Pressable, Modal, ImageBackground, Image } from 'react-native'
 import React, { useState } from 'react'
 export default function App() {
   const [name, setName] = useState('');
@@ -13,15 +13,17 @@ export default function App() {
   }
 
   return (
-    <View style={styles.body}>
+    <ImageBackground
+      style={styles.body}
+      source={{ uri: 'https://cdn.pixabay.com/photo/2013/07/12/12/35/texture-145968_960_720.png' }}
+    >
       <Modal
         visible={showWarning}
         transparent
         onRequestClose={() =>
           setshowWarning(false)
         }
-        // animationType='slide'
-        animationType='fade'
+        animationType='slide'
         hardwareAccelerated
       >
         <View style={styles.centered_view}>
@@ -30,7 +32,7 @@ export default function App() {
               <Text style={styles.text}>WARNING!</Text>
             </View>
             <View style={styles.warning_body}>
-              <Text style={styles.text}>Tên phải dài hơn 3 kí tự</Text>
+              <Text style={styles.text}>Tên phải lớn hơn 3 kí tự</Text>
             </View>
             <Pressable
               onPress={() => setshowWarning(false)}
@@ -64,20 +66,31 @@ export default function App() {
       </Pressable>
       {
         submitted ?
-          <Text style={styles.text}>
-            You are registered as {name}
-          </Text>
+          <View style={styles.body}>
+            <Text style={styles.text}>
+              Tên bạn là {name}
+            </Text>
+            <Image
+              style={styles.image}
+              source={require('./assets/done.png')}
+              resizeMode='cover'
+            />
+          </View>
           :
-          null
+          <Image
+            style={styles.image}
+            source={{ uri: 'https://cdn.pixabay.com/photo/2018/01/04/15/51/404-error-3060993_960_720.png' }}
+            resizeMode='center'
+            blurRadius={2}
+          />
       }
-    </View >
+    </ImageBackground >
   );
 };
 
 const styles = StyleSheet.create({
   body: {
     flex: 1,
-    backgroundColor: '#ffffff',
     alignItems: 'center',
   },
   text: {
@@ -131,5 +144,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#00ffff',
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
+  },
+  image: {
+    width: 500,
+    height: 100,
+    margin: 10,
   }
-});
+})
