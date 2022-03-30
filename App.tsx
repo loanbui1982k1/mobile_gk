@@ -1,5 +1,8 @@
 import { View, StyleSheet, Text, TextInput, Pressable, Modal, ImageBackground, Image } from 'react-native'
 import React, { useState } from 'react'
+import MashButton from './CustomButton';
+import Header from './Header';
+
 export default function App() {
   const [name, setName] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -17,6 +20,7 @@ export default function App() {
       style={styles.body}
       source={{ uri: 'https://cdn.pixabay.com/photo/2013/07/12/12/35/texture-145968_960_720.png' }}
     >
+      <Header />
       <Modal
         visible={showWarning}
         transparent
@@ -45,13 +49,24 @@ export default function App() {
         </View>
       </Modal>
       <Text style={styles.text}>
-        Nhập tên của bạn:
+        Nhập tên của bạn
       </Text>
       <TextInput
         style={styles.input}
         onChangeText={(value) => setName(value)}
       />
-      <Pressable
+      <MashButton
+        onPressFunction={onPressHandler}
+        title={submitted ? 'Clear' : 'Submit'}
+        color={'#00ff00'}
+      />
+      <MashButton
+        onPressFunction={() => { }}
+        title={'Test'}
+        color={'#ff00ff'}
+        style={{ margin: 10 }}
+      />
+      {/* <Pressable
         onPress={onPressHandler}
         hitSlop={{ top: 10, bottom: 10, right: 10, left: 10 }}
         android_ripple={{ color: '#00f' }}
@@ -63,25 +78,24 @@ export default function App() {
         <Text style={styles.text}>
           {submitted ? 'Clear' : 'Submit'}
         </Text>
-      </Pressable>
+      </Pressable> */}
       {
         submitted ?
           <View style={styles.body}>
             <Text style={styles.text}>
               Tên bạn là {name}
             </Text>
-            <Image
+            {/* <Image
               style={styles.image}
-              source={require('./assets/done.png')}
-              resizeMode='cover'
-            />
+              source={require('../assets/done.png')}
+              resizeMode='stretch'
+            /> */}
           </View>
           :
           <Image
             style={styles.image}
             source={{ uri: 'https://cdn.pixabay.com/photo/2018/01/04/15/51/404-error-3060993_960_720.png' }}
-            resizeMode='center'
-            blurRadius={2}
+            resizeMode='stretch'
           />
       }
     </ImageBackground >
@@ -146,8 +160,8 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 20,
   },
   image: {
-    width: 500,
+    width: 100,
     height: 100,
     margin: 10,
   }
-})
+});
