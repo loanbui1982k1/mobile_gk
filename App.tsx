@@ -1,49 +1,53 @@
-import { View, StyleSheet, Text, TextInput, Pressable, ToastAndroid, Alert } from 'react-native'
+import { View, StyleSheet, Text, TextInput, Pressable, Modal } from 'react-native'
 import React, { useState } from 'react'
 export default function App() {
-  const [name, SetName] = useState('');
-  const [submitted, SetSubmitted] = useState(false);
+  const [name, setName] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  const [showWarning, setshowWarning] = useState(false);
   const onPressHandler = () => {
     if (name.length > 3) {
-      SetSubmitted(!submitted);
+      setSubmitted(!submitted);
     } else {
-      // Alert.alert(
-      //   'Warning',
-      //   'Phải nhập tên dài hơn 3 kí tự', [
-      //   {
-      //     text: 'Do not show again',
-      //     onPress: () => console.warn('Do not show Pressed!')
-      //   },
-      //   {
-      //     text: 'Cancel',
-      //     onPress: () => console.warn('Cancel Pressed!')
-      //   },
-      //   {
-      //     text: 'OK',
-      //     onPress: () => console.warn('OK Pressed!')
-      //   },
-      // ],
-      //   {
-      //     cancelable: true,
-      //     onDismiss: () => console.warn('Alert dismissed!')
-      //   })
-      ToastAndroid.showWithGravityAndOffset(
-        'Phải nhập tên dài hơn 3 kí tự',
-        ToastAndroid.LONG,
-        ToastAndroid.CENTER,
-        10, 10
-      )
+      setshowWarning(true);
     }
   }
 
   return (
     <View style={styles.body}>
+      <Modal
+        visible={showWarning}
+        transparent
+        onRequestClose={() =>
+          setshowWarning(false)
+        }
+        // animationType='slide'
+        animationType='fade'
+        hardwareAccelerated
+      >
+        <View style={styles.centered_view}>
+          <View style={styles.warning_modal}>
+            <View style={styles.warning_title}>
+              <Text style={styles.text}>WARNING!</Text>
+            </View>
+            <View style={styles.warning_body}>
+              <Text style={styles.text}>Tên phải dài hơn 3 kí tự</Text>
+            </View>
+            <Pressable
+              onPress={() => setshowWarning(false)}
+              style={styles.warning_button}
+              android_ripple={{ color: '#fff' }}
+            >
+              <Text style={styles.text}>OK</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
       <Text style={styles.text}>
         Nhập tên của bạn:
       </Text>
       <TextInput
         style={styles.input}
-        onChangeText={(value) => SetName(value)}
+        onChangeText={(value) => setName(value)}
       />
       <Pressable
         onPress={onPressHandler}
@@ -58,14 +62,15 @@ export default function App() {
           {submitted ? 'Clear' : 'Submit'}
         </Text>
       </Pressable>
-      {submitted ?
-        <Text style={styles.text}>
-          You are registered as {name}
-        </Text>
-        :
-        null
+      {
+        submitted ?
+          <Text style={styles.text}>
+            You are registered as {name}
+          </Text>
+          :
+          null
       }
-    </View>
+    </View >
   );
 };
 
@@ -77,8 +82,9 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#000000',
-    fontSize: 25,
+    fontSize: 20,
     margin: 10,
+    textAlign: 'center',
   },
   input: {
     width: 200,
@@ -86,7 +92,7 @@ const styles = StyleSheet.create({
     borderColor: '#555',
     borderRadius: 5,
     textAlign: 'center',
-    fontSize: 25,
+    fontSize: 20,
     marginBottom: 10,
   },
   button: {
@@ -94,4 +100,36 @@ const styles = StyleSheet.create({
     height: 50,
     alignItems: 'center',
   },
+  centered_view: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#00000099'
+  },
+  warning_modal: {
+    width: 300,
+    height: 300,
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 20,
+  },
+  warning_title: {
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ff0',
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
+  },
+  warning_body: {
+    height: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  warning_button: {
+    backgroundColor: '#00ffff',
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+  }
 });
