@@ -37,5 +37,6 @@ const styles = StyleSheet.create({
     fontSize: 40,
     fontWeight: "bold",
     margin: 10,
+    fontFamily: "SpaceMono-Regular"
   },
 });
