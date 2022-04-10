@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, View, Text, Pressable } from "react-native";
+import GlobalStyle from "./utils/GlobalStyle";
 
 export default function ScreenA({ navigation, route }) {
   const onPressHandler = () => {
@@ -9,7 +10,7 @@ export default function ScreenA({ navigation, route }) {
 
   return (
     <View style={styles.body}>
-      <Text style={styles.text}>Screen A</Text>
+      <Text style={[GlobalStyle.CustomFont, styles.text]}>Screen A</Text>
       <Pressable
         onPress={onPressHandler}
         style={({ pressed }) => ({
@@ -33,6 +34,5 @@ const styles = StyleSheet.create({
     fontSize: 40,
     fontWeight: "bold",
     margin: 10,
-    fontFamily: "SpaceMono-Regular"
   },
 });
