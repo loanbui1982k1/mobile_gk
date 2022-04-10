@@ -1,26 +1,30 @@
 import React from "react";
 import { StyleSheet, View, Text, Pressable } from "react-native";
-import { useNavigation } from "@react-navigation/core";
-export default function ScreenB() {
-    const navigation = useNavigation();
-    const onPressHandler = () => {
-      // navigation.navigate('Screen_A');
-      navigation.goBack();
-    };
 
-    return (
-      <View style={styles.body}>
-        <Text style={styles.text}>Screen B</Text>
-        <Pressable
-          onPress={onPressHandler}
-          style={({ pressed }) => ({
-            backgroundColor: pressed ? "#ddd" : "#0f0",
-          })}
-        >
-          <Text style={styles.text}>Go Back to Screen A</Text>
-        </Pressable>
-      </View>
-    );
+export default function ScreenB({ navigation, route }) {
+  const { ItemName, ItemId } = route.params;
+
+  const onPressHandler = () => {
+    navigation.navigate("Screen_A", { Message: "message from B" });
+    // navigation.goBack();
+    // navigation.setParams({ ItemId: 14 });
+  };
+
+  return (
+    <View style={styles.body}>
+      <Text style={styles.text}>Screen B</Text>
+      <Pressable
+        onPress={onPressHandler}
+        style={({ pressed }) => ({
+          backgroundColor: pressed ? "#ddd" : "#0f0",
+        })}
+      >
+        <Text style={styles.text}>Go Back to Screen A</Text>
+      </Pressable>
+      <Text style={styles.text}>{ItemName}</Text>
+      <Text style={styles.text}>ID: {ItemId}</Text>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

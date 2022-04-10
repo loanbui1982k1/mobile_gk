@@ -1,10 +1,10 @@
 import React from "react";
 import { StyleSheet, View, Text, Pressable } from "react-native";
-import { useNavigation } from "@react-navigation/core";
-export default function ScreenA() {
-  const navigation = useNavigation();
+
+export default function ScreenA({ navigation, route }) {
   const onPressHandler = () => {
     navigation.navigate("Screen_B");
+    // navigation.toggleDrawer();
   };
 
   return (
@@ -18,8 +18,9 @@ export default function ScreenA() {
       >
         <Text style={styles.text}>Go to Screen B</Text>
       </Pressable>
+      <Text style={styles.text}>{route.params?.Message}</Text>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
