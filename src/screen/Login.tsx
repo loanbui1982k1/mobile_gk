@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { View, StyleSheet, Image, Text, TextInput, Alert } from "react-native";
 import CustomButton from "../utils/CustomButton";
 import SQLite from "react-native-sqlite-storage";
+import { useSelector, useDispatch } from "react-redux";
+import { setName, setAge } from "../redux/actions";
 
 const db = SQLite.openDatabase(
   {
-    name: "MobileDB",
+    name: "MainDB",
     location: "default",
   },
   () => {},
@@ -15,8 +17,11 @@ const db = SQLite.openDatabase(
 );
 
 export default function Login({ navigation }) {
-  const [name, setName] = useState("");
-  const [age, setAge] = useState("");
+  const { name, age } = useSelector((state) => state.userReducer);
+  const dispatch = useDispatch();
+
+  // const [name, setName] = useState('');
+  // const [age, setAge] = useState('');
 
   useEffect(() => {
     createTable();
@@ -56,9 +61,11 @@ export default function Login({ navigation }) {
 
   const setData = async () => {
     if (name.length == 0 || age.length == 0) {
-      Alert.alert("Warning!", "Please write your data");
+      Alert.alert("Warning!", "Please write your data.");
     } else {
       try {
+        dispatch(setName(name));
+        dispatch(setAge(age));
         // var user = {
         //     Name: name,
         //     Age: age
@@ -82,16 +89,17 @@ export default function Login({ navigation }) {
 
   return (
     <View style={styles.body}>
-      <Text style={styles.text}></Text>
+      <Image style={styles.logo} source={require("../../assets/redux.png")} />
+      <Text style={styles.text}>Redux</Text>
       <TextInput
         style={styles.input}
         placeholder="Enter your name"
-        onChangeText={(value) => setName(value)}
+        onChangeText={(value) => dispatch(setName(value))}
       />
       <TextInput
         style={styles.input}
         placeholder="Enter your age"
-        onChangeText={(value) => setAge(value)}
+        onChangeText={(value) => dispatch(setAge(value))}
       />
       <CustomButton title="Login" color="#1eb900" onPressFunction={setData} />
     </View>
@@ -105,14 +113,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#0080ff",
   },
   logo: {
-    width: 200,
-    height: 100,
+    width: 150,
+    height: 150,
     margin: 20,
   },
   text: {
     fontSize: 30,
     color: "#ffffff",
-    marginBottom: 130,
+    marginBottom: 100,
   },
   input: {
     width: 300,

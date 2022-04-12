@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, View, Text, Alert, TextInput } from "react-native";
 import CustomButton from "../utils/CustomButton";
 import GlobalStyle from "../utils/GlobalStyle";
 import SQLite from "react-native-sqlite-storage";
+import { useSelector, useDispatch } from "react-redux";
+import { setName, setAge, increaseAge } from "../redux/actions";
 
 const db = SQLite.openDatabase(
   {
-    name: "MobileDB",
+    name: "MainDB",
     location: "default",
   },
   () => {},
@@ -16,8 +18,11 @@ const db = SQLite.openDatabase(
 );
 
 export default function Home({ navigation, route }) {
-  const [name, setName] = useState("");
-  const [age, setAge] = useState("");
+  const { name, age } = useSelector((state) => state.userReducer);
+  const dispatch = useDispatch();
+
+  // const [name, setName] = useState('');
+  // const [age, setAge] = useState('');
 
   useEffect(() => {
     getData();
@@ -39,8 +44,8 @@ export default function Home({ navigation, route }) {
           if (len > 0) {
             var userName = results.rows.item(0).Name;
             var userAge = results.rows.item(0).Age;
-            setName(userName);
-            setAge(userAge);
+            dispatch(setName(userName));
+            dispatch(setAge(userAge));
           }
         });
       });
@@ -51,7 +56,7 @@ export default function Home({ navigation, route }) {
 
   const updateData = async () => {
     if (name.length == 0) {
-      Alert.alert("Warning!", "Please write your data");
+      Alert.alert("Warning!", "Please write your data.");
     } else {
       try {
         // var user = {
@@ -63,7 +68,7 @@ export default function Home({ navigation, route }) {
             "UPDATE Users SET Name=?",
             [name],
             () => {
-              Alert.alert("Success!", "Your data has been updated");
+              Alert.alert("Success!", "Your data has been updated.");
             },
             (error) => {
               console.log(error);
@@ -108,7 +113,7 @@ export default function Home({ navigation, route }) {
         style={styles.input}
         placeholder="Enter your name"
         value={name}
-        onChangeText={(value) => setName(value)}
+        onChangeText={(value) => dispatch(setName(value))}
       />
       <CustomButton
         title="Update"
@@ -119,6 +124,13 @@ export default function Home({ navigation, route }) {
         title="Remove"
         color="#f40100"
         onPressFunction={removeData}
+      />
+      <CustomButton
+        title="Increase Age"
+        color="#0080ff"
+        onPressFunction={() => {
+          dispatch(increaseAge());
+        }}
       />
     </View>
   );
