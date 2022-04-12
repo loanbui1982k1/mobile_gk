@@ -1,80 +1,99 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Text, Alert, TextInput } from "react-native";
+import { View, StyleSheet, Image, Text, TextInput, Alert } from "react-native";
 import CustomButton from "../utils/CustomButton";
-import GlobalStyle from "../utils/GlobalStyle";
+import SQLite from "react-native-sqlite-storage";
 
-export default function Home({ navigation, route }) {
+const db = SQLite.openDatabase(
+  {
+    name: "MobileDB",
+    location: "default",
+  },
+  () => {},
+  (error) => {
+    console.log(error);
+  }
+);
+
+export default function Login({ navigation }) {
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
 
   useEffect(() => {
+    createTable();
     getData();
   }, []);
 
+  const createTable = () => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        "CREATE TABLE IF NOT EXISTS " +
+          "Users " +
+          "(ID INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, Age INTEGER);"
+      );
+    });
+  };
+
   const getData = () => {
     try {
-      AsyncStorage.getItem("UserData").then((value) => {
-        if (value != null) {
-          let user = JSON.parse(value);
-          setName(user.Name);
-          setAge(user.Age);
-        }
+      // AsyncStorage.getItem('UserData')
+      //     .then(value => {
+      //         if (value != null) {
+      //             navigation.navigate('Home');
+      //         }
+      //     })
+      db.transaction((tx) => {
+        tx.executeSql("SELECT Name, Age FROM Users", [], (tx, results) => {
+          var len = results.rows.length;
+          if (len > 0) {
+            navigation.navigate("Home");
+          }
+        });
       });
     } catch (error) {
       console.log(error);
     }
   };
 
-  const updateData = async () => {
-    if (name.length == 0) {
-      Alert.alert("Warning!", "Please write your data.");
+  const setData = async () => {
+    if (name.length == 0 || age.length == 0) {
+      Alert.alert("Warning!", "Please write your data");
     } else {
       try {
-        var user = {
-          Name: name,
-        };
-        await AsyncStorage.mergeItem("UserData", JSON.stringify(user));
-        Alert.alert("Success!", "Your data has been updated.");
+        // var user = {
+        //     Name: name,
+        //     Age: age
+        // }
+        // await AsyncStorage.setItem('UserData', JSON.stringify(user));
+        await db.transaction(async (tx) => {
+          // await tx.executeSql(
+          //     "INSERT INTO Users (Name, Age) VALUES ('" + name + "'," + age + ")"
+          // );
+          await tx.executeSql("INSERT INTO Users (Name, Age) VALUES (?,?)", [
+            name,
+            age,
+          ]);
+        });
+        navigation.navigate("Home");
       } catch (error) {
         console.log(error);
       }
     }
   };
 
-  const removeData = async () => {
-    try {
-      await AsyncStorage.clear();
-      navigation.navigate("Login");
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
     <View style={styles.body}>
-      <Text style={[GlobalStyle.CustomFont, styles.text]}>
-        Welcome {name} !
-      </Text>
-      <Text style={[GlobalStyle.CustomFont, styles.text]}>
-        Your age is {age}
-      </Text>
+      <Text style={styles.text}></Text>
       <TextInput
         style={styles.input}
         placeholder="Enter your name"
-        value={name}
         onChangeText={(value) => setName(value)}
       />
-      <CustomButton
-        title="Update"
-        color="#ff7f00"
-        onPressFunction={updateData}
+      <TextInput
+        style={styles.input}
+        placeholder="Enter your age"
+        onChangeText={(value) => setAge(value)}
       />
-      <CustomButton
-        title="Remove"
-        color="#f40100"
-        onPressFunction={removeData}
-      />
+      <CustomButton title="Login" color="#1eb900" onPressFunction={setData} />
     </View>
   );
 }
@@ -83,10 +102,17 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
     alignItems: "center",
+    backgroundColor: "#0080ff",
+  },
+  logo: {
+    width: 200,
+    height: 100,
+    margin: 20,
   },
   text: {
-    fontSize: 40,
-    margin: 10,
+    fontSize: 30,
+    color: "#ffffff",
+    marginBottom: 130,
   },
   input: {
     width: 300,
@@ -96,7 +122,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     textAlign: "center",
     fontSize: 20,
-    marginTop: 130,
     marginBottom: 10,
   },
 });

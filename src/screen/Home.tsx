@@ -1,8 +1,19 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, Alert, TextInput } from "react-native";
 import CustomButton from "../utils/CustomButton";
 import GlobalStyle from "../utils/GlobalStyle";
+import SQLite from "react-native-sqlite-storage";
+
+const db = SQLite.openDatabase(
+  {
+    name: "MobileDB",
+    location: "default",
+  },
+  () => {},
+  (error) => {
+    console.log(error);
+  }
+);
 
 export default function Home({ navigation, route }) {
   const [name, setName] = useState("");
@@ -14,12 +25,24 @@ export default function Home({ navigation, route }) {
 
   const getData = () => {
     try {
-      AsyncStorage.getItem("UserData").then((value) => {
-        if (value != null) {
-          let user = JSON.parse(value);
-          setName(user.Name);
-          setAge(user.Age);
-        }
+      // AsyncStorage.getItem('UserData')
+      //     .then(value => {
+      //         if (value != null) {
+      //             let user = JSON.parse(value);
+      //             setName(user.Name);
+      //             setAge(user.Age);
+      //         }
+      //     })
+      db.transaction((tx) => {
+        tx.executeSql("SELECT Name, Age FROM Users", [], (tx, results) => {
+          var len = results.rows.length;
+          if (len > 0) {
+            var userName = results.rows.item(0).Name;
+            var userAge = results.rows.item(0).Age;
+            setName(userName);
+            setAge(userAge);
+          }
+        });
       });
     } catch (error) {
       console.log(error);
@@ -28,14 +51,25 @@ export default function Home({ navigation, route }) {
 
   const updateData = async () => {
     if (name.length == 0) {
-      Alert.alert("Warning!", "Please write your data.");
+      Alert.alert("Warning!", "Please write your data");
     } else {
       try {
-        var user = {
-          Name: name,
-        };
-        await AsyncStorage.mergeItem("UserData", JSON.stringify(user));
-        Alert.alert("Success!", "Your data has been updated.");
+        // var user = {
+        //     Name: name
+        // }
+        // await AsyncStorage.mergeItem('UserData', JSON.stringify(user));
+        db.transaction((tx) => {
+          tx.executeSql(
+            "UPDATE Users SET Name=?",
+            [name],
+            () => {
+              Alert.alert("Success!", "Your data has been updated");
+            },
+            (error) => {
+              console.log(error);
+            }
+          );
+        });
       } catch (error) {
         console.log(error);
       }
@@ -44,8 +78,19 @@ export default function Home({ navigation, route }) {
 
   const removeData = async () => {
     try {
-      await AsyncStorage.clear();
-      navigation.navigate("Login");
+      // await AsyncStorage.clear();
+      db.transaction((tx) => {
+        tx.executeSql(
+          "DELETE FROM Users",
+          [],
+          () => {
+            navigation.navigate("Login");
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
+      });
     } catch (error) {
       console.log(error);
     }
