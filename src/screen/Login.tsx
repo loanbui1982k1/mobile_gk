@@ -1,20 +1,10 @@
 import React, { useEffect } from "react";
-import { View, StyleSheet, Image, Text, TextInput, Alert } from "react-native";
+import { View, StyleSheet, Text, TextInput, Alert } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomButton from "../utils/CustomButton";
-import SQLite from "react-native-sqlite-storage";
+// import SQLite from 'react-native-sqlite-storage';
 import { useSelector, useDispatch } from "react-redux";
 import { setName, setAge } from "../redux/actions";
-
-const db = SQLite.openDatabase(
-  {
-    name: "MainDB",
-    location: "default",
-  },
-  () => {},
-  (error) => {
-    console.log(error);
-  }
-);
 
 export default function Login({ navigation }) {
   const { name, age } = useSelector((state) => state.userReducer);
@@ -24,35 +14,16 @@ export default function Login({ navigation }) {
   // const [age, setAge] = useState('');
 
   useEffect(() => {
-    createTable();
+    // createTable();
     getData();
   }, []);
 
-  const createTable = () => {
-    db.transaction((tx) => {
-      tx.executeSql(
-        "CREATE TABLE IF NOT EXISTS " +
-          "Users " +
-          "(ID INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, Age INTEGER);"
-      );
-    });
-  };
-
   const getData = () => {
     try {
-      // AsyncStorage.getItem('UserData')
-      //     .then(value => {
-      //         if (value != null) {
-      //             navigation.navigate('Home');
-      //         }
-      //     })
-      db.transaction((tx) => {
-        tx.executeSql("SELECT Name, Age FROM Users", [], (tx, results) => {
-          var len = results.rows.length;
-          if (len > 0) {
-            navigation.navigate("Home");
-          }
-        });
+      AsyncStorage.getItem("UserData").then((value) => {
+        if (value != null) {
+          navigation.navigate("Home");
+        }
       });
     } catch (error) {
       console.log(error);
@@ -66,20 +37,12 @@ export default function Login({ navigation }) {
       try {
         dispatch(setName(name));
         dispatch(setAge(age));
-        // var user = {
-        //     Name: name,
-        //     Age: age
-        // }
-        // await AsyncStorage.setItem('UserData', JSON.stringify(user));
-        await db.transaction(async (tx) => {
-          // await tx.executeSql(
-          //     "INSERT INTO Users (Name, Age) VALUES ('" + name + "'," + age + ")"
-          // );
-          await tx.executeSql("INSERT INTO Users (Name, Age) VALUES (?,?)", [
-            name,
-            age,
-          ]);
-        });
+        var user = {
+          Name: name,
+          Age: age,
+        };
+        await AsyncStorage.setItem("UserData", JSON.stringify(user));
+
         navigation.navigate("Home");
       } catch (error) {
         console.log(error);
@@ -89,7 +52,10 @@ export default function Login({ navigation }) {
 
   return (
     <View style={styles.body}>
-      <Image style={styles.logo} source={require("../../assets/redux.png")} />
+      {/* <Image
+                style={styles.logo}
+                source={require('../../assets/redux.png')}
+            /> */}
       <Text style={styles.text}>Redux</Text>
       <TextInput
         style={styles.input}
