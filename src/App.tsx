@@ -1,57 +1,48 @@
-import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import ScreenA from "./ScreenA";
-import ScreenB from "./ScreenB";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import React, { useEffect } from "react";
+import { View, StyleSheet, Text, Image } from "react-native";
+import PushNotification from "react-native-push-notification";
+import GlobalStyle from "../utils/GlobalStyle";
 
-// const Tab = createBottomTabNavigator();
-// const Tab = createMaterialBottomTabNavigator();
-const Tab = createMaterialTopTabNavigator();
+export default function Splash({ navigation }) {
+  useEffect(() => {
+    createChannels();
+    setTimeout(() => {
+      navigation.replace("My Tasks");
+    }, 2000);
+  }, []);
 
-function App() {
+  const createChannels = () => {
+    PushNotification.createChannel({
+      channelId: "task-channel",
+      channelName: "Task Channel",
+    });
+  };
+
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, size, color }) => {
-            let iconName;
-            if (route.name === "Screen_A") {
-              iconName = "autoprefixer";
-              size = focused ? 25 : 20;
-              // color = focused ? '#f0f' : '#555';
-            } else if (route.name === "Screen_B") {
-              iconName = "btc";
-              size = focused ? 25 : 20;
-              // color = focused ? '#f0f' : '#555';
-            }
-            return <FontAwesome5 name={iconName} size={size} color={color} />;
-          },
-        })}
-        tabBarOptions={{
-          activeTintColor: "#f0f",
-          inactiveTintColor: "#555",
-          activeBackgroundColor: "#fff",
-          inactiveBackgroundColor: "#999",
-          showLabel: true,
-          labelStyle: { fontSize: 14 },
-          showIcon: true,
-        }}
-        activeColor="#f0edf6"
-        inactiveColor="#3e2465"
-        barStyle={{ backgroundColor: "#694fad" }}
-      >
-        <Tab.Screen
-          name="Screen_A"
-          component={ScreenA}
-          options={{ tabBarBadge: 3 }}
-        />
-        <Tab.Screen name="Screen_B" component={ScreenB} />
-      </Tab.Navigator>
-    </NavigationContainer>
+    <View style={styles.body}>
+      <Image
+        style={styles.logo}
+        source={require("../../assets/checklist.png")}
+      />
+      <Text style={[GlobalStyle.CustomFontBig, styles.text]}>To-Do List</Text>
+    </View>
   );
 }
 
-export default App;
+const styles = StyleSheet.create({
+  body: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#0080ff",
+  },
+  logo: {
+    width: 150,
+    height: 150,
+    margin: 20,
+  },
+  text: {
+    fontSize: 40,
+    color: "#ffffff",
+  },
+});
